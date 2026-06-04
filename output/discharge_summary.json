@@ -17,20 +17,6 @@
         "USG abdomen and pelvis",
         "USG Abdomen & Pelvis (Bedside)"
     ],
-    "admission_medications": [
-        "IV PPI's",
-        "IV fluids",
-        "IV antiemetics",
-        "Nebulisation",
-        "IV antibiotics"
-    ],
-    "discharge_medications": [
-        "TAB. RACIPER MG 1-0-0",
-        "TAB. EMESET",
-        "TAB. STRONG 1-0-0",
-        "TAB. ENTR 1- -1",
-        "TAB. MEFTAL SPAS 1 TAB SOS"
-    ],
     "allergies": "No known allergies",
     "follow_up": [
         "Review immediately in case of fever, loose stools, vomiting, fatigue.",
@@ -39,5 +25,37 @@
     "pending_results": [
         "Urine culture and sensitivity report"
     ],
-    "discharge_condition": "Hemodynamically stable"
+    "discharge_condition": "Hemodynamically stable",
+    "medication_reconciliation": {
+        "continued": [],
+        "added": [
+            "TAB. EMESET",
+            "TAB. RACIPER MG 1-0-0",
+            "TAB. ENTR 1- -1",
+            "TAB. MEFTAL SPAS 1 TAB SOS",
+            "TAB. STRONG 1-0-0"
+        ],
+        "stopped": [
+            "IV PPI's",
+            "IV fluids",
+            "IV antiemetics",
+            "Nebulisation",
+            "IV antibiotics"
+        ],
+        "changed": [],
+        "review_required": [
+            "Medication additions lack documented rationale",
+            "Medication discontinuations require review"
+        ]
+    },
+    "clinician_review_flags": [],
+    "conflicts": [
+        "Patient discharged with pending results"
+    ],
+    "resolutions": [
+        {
+            "conflict": "Patient discharged with pending results",
+            "resolution": "Escalated for clinician review"
+        }
+    ]
 }

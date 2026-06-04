@@ -8,7 +8,7 @@
     {
         "reasoning": "Check extracted facts for conflicts",
         "action": "detect_conflicts",
-        "result": "0 conflicts found",
+        "result": "1 conflicts found",
         "next_step": "run_agent"
     },
     {
@@ -20,13 +20,13 @@
     {
         "reasoning": "Planner evaluated state",
         "action": "determine_next_action",
-        "result": "Selected: search_missing. Missing fields: ['patient_demographics', 'admission_date', 'discharge_date', 'principal_diagnosis', 'hospital_course', 'discharge_condition']",
-        "next_step": "search_missing"
+        "result": "Selected: resolve_conflicts. Missing fields: []",
+        "next_step": "resolve_conflicts"
     },
     {
-        "reasoning": "Missing fields found",
-        "action": "flag_missing_fields",
-        "result": "8 flags created",
+        "reasoning": "Conflicts detected",
+        "action": "resolve_conflicts",
+        "result": "1 resolutions created",
         "next_step": "generate_summary"
     }
 ]
