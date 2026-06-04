@@ -1,10 +1,10 @@
-# Clinical Discharge Summary Agent
+# Clinical Discharge Agent
 
 ## Overview
 
 This project implements an agentic AI system that converts unstructured clinical source notes into a structured discharge summary draft for clinician review.
 
-The system reads patient PDFs, extracts relevant clinical information, identifies missing data, detects potential conflicts, performs medication reconciliation, and generates a structured discharge summary while maintaining strict safety guardrails.
+The system processes patient PDFs, extracts relevant clinical information, identifies missing data, detects potential conflicts, performs medication reconciliation, and generates a structured discharge summary while maintaining strict safety guardrails.
 
 The primary design goal is clinical safety: the system never fabricates information and always escalates uncertainty for clinician review.
 
@@ -12,44 +12,43 @@ The primary design goal is clinical safety: the system never fabricates informat
 
 # Architecture
 
-```text
 Patient PDF
-      │
-      ▼
-PDF Extraction
-(PyMuPDF)
-      │
-      ▼
-OCR Fallback
-(Tesseract)
-      │
-      ▼
-Fact Extraction
-(Gemini 2.5 Flash)
-      │
-      ▼
+
+↓
+
+PDF Extraction (PyMuPDF)
+
+↓
+
+OCR Fallback (Tesseract)
+
+↓
+
+Fact Extraction (Gemini 2.5 Flash)
+
+↓
+
 Conflict Detection
-      │
-      ▼
+
+↓
+
 Agent Planner
-      │
- ┌────┴────┐
- ▼         ▼
-Missing    Conflicts
-Data       Found
- │           │
- ▼           ▼
-Clinician   Conflict
-Review      Resolution
- │           │
- └────┬──────┘
-      ▼
+
+↓
+
+Missing Data Review OR Conflict Resolution
+
+↓
+
 Medication Reconciliation
-      ▼
-Discharge Summary
-      ▼
+
+↓
+
+Discharge Summary Generation
+
+↓
+
 Trace Generation
-```
 
 ---
 
@@ -103,9 +102,7 @@ The extraction stage identifies:
 
 Structured facts are saved to:
 
-```text
 output/extracted_facts.json
-```
 
 ---
 
@@ -115,18 +112,13 @@ The system never invents information.
 
 If required information cannot be found:
 
-* The field is marked as `MISSING`
+* The field is marked as MISSING
 * A clinician review flag is created
 * The information is surfaced to the reviewer
 
 Example:
 
-```json
-{
-  "field": "patient_demographics",
-  "reason": "Information not found in source documents"
-}
-```
+patient_demographics = MISSING
 
 ---
 
@@ -190,7 +182,7 @@ The agent is designed to fail safely.
 
 Implemented safeguards:
 
-* Missing information is marked as `MISSING`
+* Missing information is marked as MISSING
 * Empty extraction results are escalated for review
 * Tool failures are surfaced rather than silently ignored
 * The agent maintains execution traces for debugging
@@ -211,74 +203,84 @@ Trace entries include:
 * Result
 * Next step
 
-Example trace:
+These traces are stored in:
 
-```json
-{
-  "reasoning": "Planner evaluated state",
-  "action": "determine_next_action",
-  "result": "Selected: search_missing",
-  "next_step": "search_missing"
-}
-```
-
-Traces are stored in:
-
-```text
 traces/trace.json
-```
 
 ---
 
-# Outputs
+# Running the Project
 
-## Structured Facts
+Create a virtual environment:
 
-```text
+python -m venv .venv
+
+source .venv/bin/activate
+
+Install dependencies:
+
+pip install -r requirements.txt
+
+Create a .env file:
+
+GEMINI_API_KEY=YOUR_API_KEY
+
+Run:
+
+python main.py
+
+---
+
+# Generated Outputs
+
+After running:
+
+python main.py
+
+the following outputs are generated:
+
+### Extracted Facts
+
 output/extracted_facts.json
-```
 
-Contains extracted patient information.
+Contains structured clinical facts extracted from the source documents.
 
----
+### Discharge Summary (JSON)
 
-## Discharge Summary (JSON)
-
-```text
 output/discharge_summary.json
-```
 
-Machine-readable discharge summary.
+Machine-readable discharge summary including diagnoses, procedures, medications, pending results, clinician review flags, conflicts, and medication reconciliation.
 
----
+### Discharge Summary (Markdown)
 
-## Discharge Summary (Markdown)
-
-```text
 output/discharge_summary.md
-```
 
-Human-readable discharge summary.
+Human-readable discharge summary draft intended for clinician review.
 
----
+### Agent Report
 
-## Agent Report
-
-```text
 output/agent_report.md
-```
 
-Summarizes agent decisions, safety events, and metrics.
+Summary of agent decisions, safety events, conflicts, and review flags.
+
+### Agent Trace
+
+traces/trace.json
+
+Complete reasoning trace showing planner decisions, actions taken, results, and next steps.
 
 ---
 
-## Trace
+# Example Output
 
-```text
-traces/trace.json
-```
+Sample generated outputs are included in the repository:
 
-Full reasoning trace.
+* output/discharge_summary.json
+* output/discharge_summary.md
+* output/agent_report.md
+* traces/trace.json
+
+These files demonstrate discharge summary generation, medication reconciliation, clinician review flags, conflict detection, and agent observability.
 
 ---
 
@@ -289,50 +291,6 @@ Full reasoning trace.
 * PyMuPDF
 * Tesseract OCR
 * Pydantic
-
----
-
-# Installation
-
-Create a virtual environment:
-
-```bash
-python -m venv .venv
-source .venv/bin/activate
-```
-
-Install dependencies:
-
-```bash
-pip install -r requirements.txt
-```
-
-Create a `.env` file:
-
-```env
-GEMINI_API_KEY=YOUR_API_KEY
-```
-
-Run:
-
-```bash
-python main.py
-```
-
----
-
-# Example Workflow
-
-1. Load patient PDF
-2. Extract PDF text / OCR
-3. Extract structured facts
-4. Detect conflicts
-5. Plan next action
-6. Escalate missing information
-7. Resolve conflicts when applicable
-8. Perform medication reconciliation
-9. Generate discharge summary
-10. Save reasoning trace
 
 ---
 
